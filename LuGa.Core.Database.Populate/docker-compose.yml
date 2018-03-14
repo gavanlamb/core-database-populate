@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  populate:
+    build:
+      context: .
+      args:
+        LUGA_NUGET_PAT: "s6nqm4cz3yphqpgzc4xnhfg2mlcdu3qncxqyykang33vx3us6koa"
+    depends_on:
+      - migrate
+    environment:
+      connectionString: "server=mysql;persistsecurityinfo=True;user id=root;password=example;database=luga"
+    command: ["./wait-for-it.sh", "migrate", "--", echo, "populate"]
+  migrate:
+    image: luga/migrate:latest
+    links:
+      - mysql:mariadb
+    depends_on:
+      - mysql
+    environment:
+      connectionString: "server=mysql;persistsecurityinfo=True;user id=root;password=example;database=luga"
+    command: ["./wait-for-it.sh", "mysql:3306", "--", echo, "migrations"]
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports: 
+      - 8080:80
+    links:
+      - mysql:mariadb
+    environment: 
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: example
+      PMA_HOST: mysql
+    depends_on:
+      - mysql
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: luga
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
