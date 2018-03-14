@@ -9,7 +9,8 @@
     <None Remove="Scripts\Scripsts0001 - Create readings and event tables.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Scripsts0001 - Create readings and event tables.sql" />
+    <EmbeddedResource Include="Scripts\Scripsts0001 - Populate events.sql" />
+    <EmbeddedResource Include="Scripts\Scripsts0002 - Populate readings.sql" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="dbup-mysql" Version="4.0.0-beta0004" />
